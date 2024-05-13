@@ -14,8 +14,18 @@ public class ChoresController : ControllerBase
     [HttpGet]
     public ActionResult<List<Chore>> GetAllChores()
     {
-        List<Chore> chores = _choresService.GetAllChores();
-        return Ok(chores)
+        try
+        {
+            List<Chore> chores = _choresService.GetAllChores();
+            return Ok(chores);
+        }
+        catch (Exception error)
+        {
+
+            return BadRequest(error.Message);
+        }
+
+
     }
 
 }
