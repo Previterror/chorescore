@@ -2,6 +2,9 @@
 
 
 
+
+using MySqlConnector;
+
 namespace chorescore.Repositories;
 
 public class ChoresRepository
@@ -12,11 +15,6 @@ public class ChoresRepository
         _db = db;
     }
 
-    internal void CancelChore(int choreId)
-    {
-        string sql = "DELETE FROM chores WHERE id = @choreId;";
-        _db.Execute(sql, new { choreId });
-    }
 
     internal Chore CreateChore(Chore choreData)
     {
@@ -29,6 +27,11 @@ public class ChoresRepository
 
         Chore chore = _db.Query<Chore>(sql, choreData).FirstOrDefault();
         return chore;
+    }
+    internal void CancelChore(int choreId)
+    {
+        string sql = "DELETE FROM chores WHERE id = @choreId;";
+        _db.Execute(sql, new { choreId });
     }
 
     internal List<Chore> GetAllChores()
@@ -44,4 +47,28 @@ public class ChoresRepository
         Chore chore = _db.Query<Chore>(sql, new { choreId }).FirstOrDefault();
         return chore;
     }
+
+    internal Boolean UpdateChore(int choreId, Chore choreToUpdate)
+    {
+        string sql = @"
+        UPDATE chores 
+        SET  
+        name = @choreToUpdate.name
+        description = @choreToUpdate.description
+        isCompleted = @choreToUpdate.isCompleted
+        WHERE id = @choreId";
+
+
+        MySqlParameter paraName = new MySqlParameter("@name", MySqlDbType.VarChar);
+        paraName.Value = choreToUpdate.Name;
+        MySqlParameter paraDesc = new MySqlParameter("@description", MySqlDbType.VarChar);
+        paraDesc.Value = choreToUpdate.Description;
+        MySqlParameter paraCompleted = new MySqlParameter("@isCompleted", MySqlDbType.Bool);
+        paraCompleted.Value = choreToUpdate.isCompleted;
+
+
+        int updateSuccess = _db.Execute(sql, new List<MySqlParameter> { paraName, paraDesc, paraCompleted });
+        return updateSuccess > 0;
+    }
+
 }

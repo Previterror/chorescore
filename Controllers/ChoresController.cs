@@ -11,6 +11,49 @@ public class ChoresController : ControllerBase
         _choresService = choresService;
     }
 
+
+    [HttpPost]
+    public ActionResult<Chore> CreateChore([FromBody] Chore choreData)
+    {
+        try
+        {
+            Chore chore = _choresService.CreateChore(choreData);
+            return Ok(chore);
+        }
+        catch (Exception error)
+        {
+            return BadRequest(error.Message);
+        }
+    }
+
+    [HttpPut("{choreId}")]
+    public ActionResult<Chore> UpdateChore(int choreId, [FromBody] Chore choreData)
+    {
+        try
+        {
+            Chore chore = _choresService.UpdateChore(choreId, choreData);
+            return Ok(chore);
+        }
+        catch (Exception error)
+        {
+            return BadRequest(error.Message);
+        }
+    }
+
+    [HttpDelete("{choreId}")]
+    public ActionResult<string> CancelChore(int choreId)
+    {
+        try
+        {
+            string message = _choresService.CancelChore(choreId);
+            return Ok(message);
+        }
+        catch (Exception exception)
+        {
+            return BadRequest(exception.Message);
+        }
+    }
+
     [HttpGet]
     public ActionResult<List<Chore>> GetAllChores()
     {
@@ -42,34 +85,5 @@ public class ChoresController : ControllerBase
     }
 
 
-    [HttpPost]
-    public ActionResult<Chore> CreateChore([FromBody] Chore choreData)
-    {
-        try
-        {
-            Chore chore = _choresService.CreateChore(choreData);
-            return Ok(chore);
-        }
-        catch (Exception error)
-        {
-
-            return BadRequest(error.Message);
-        }
-    }
-
-
-    [HttpDelete("{choreId}")]
-    public ActionResult<string> CancelChore(int choreId)
-    {
-        try
-        {
-            string message = _choresService.CancelChore(choreId);
-            return Ok(message);
-        }
-        catch (Exception exception)
-        {
-            return BadRequest(exception.Message);
-        }
-    }
 
 }
